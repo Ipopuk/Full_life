@@ -149,6 +149,7 @@ class Menu(pygame.sprite.Sprite):
                     y = 0
                 elif vector == 3:
                     x -= 2
+                    print("nya")
                     y = 0
                 load_image(self, image, x=x, y=y)
                 menu_sprites.draw(screen)
