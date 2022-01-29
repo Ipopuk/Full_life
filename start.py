@@ -1,5 +1,6 @@
+from json import load
 from create_db import create, Result, session
-from random import choice, choices, randint
+from random import choice, choices
 from string import ascii_lowercase
 from time import sleep, time
 import os
@@ -40,61 +41,62 @@ class Menu(pygame.sprite.Sprite):
         self.current_screen = 'menu'
         self.screenplay = {
             '0': ['hall.png', 'shadow.png', ['Понедельник. 8:30am'], ['...']],
-            '1.': ['room.png', 'book.png', ['Ух, надо поторопится...'], ['Положить'], 3],
-            '1.1.': ['locker.png', 'watches.png', ['Фух... успел'], ['Проверить шкафчик', 'Пойти в класс'], 3],
+            '1.': ['room.png', 'book.png', ['Ух, надо поторопиться...'], ['Положить'], 3],
+            '1.1.': ['locker.png', 'watches.png', ['Фух... успел'], ['Проверить шкафчик', 'Пойти в класс'], 0],
             '1.1.1.': ['open_locker.png', 'open_locker.png', ['Что это?'], ['Взять письмо'], 3],
-            '1.1.1.1.': ['open_locker.png', 'letter.png', ['...'], ['...'], 2],
-            '1.1.2.': ['classroom.png', 'classroom.png', ['Скоро домой.'], ['...'], 2],
-            '1.1.1.1.1.': ['classroom.png', 'classroom.png', ['Теперь не могу сосредоточиться'], ['...'], 2],
+            '1.1.1.1.': ['open_locker.png', 'letter.png', ['...'], ['...'], 0],
+            '1.1.2.': ['classroom.png', 'classroom.png', ['Скоро домой.'], ['...'], 0],
+            '1.1.1.1.1.': ['classroom.png', 'classroom.png', ['Теперь не могу сосредоточиться'], ['...'], 0],
             '1.1.1.1.1.1.': ['clock.png', 'letter.png', ['Время назначенной встречи..'],
-                             ['Пойти на крышу', 'Проигнорировать и пойти домой'], 2],
-            '1.1.2.1.': ['clock.png', 'letter.png', ['*звонок*'], ['Пойти на крышу, подышать', 'Пойти домой'], 3],
+                             ['Пойти на крышу', 'Проигнорировать и пойти домой'], 0],
+            '1.1.2.1.': ['clock.png', 'clock.png', ['*звонок*'], ['Пойти на крышу, подышать', 'Пойти домой'], 0],
             '1.1.2.1.1.': ['meeting.png', 'meeting.png',
                            ['О! Ты пришел, я так рада! Значит ты согласен встречаться!? Я так рада, что это взаимно!!'],
-                           ['Эмм.. что..я не... это не..'], 3],
+                           ['Эмм.. что..я не... это не..'], 0],
             '1.1.2.1.2.': ['meeting.png', 'meeting.png', ['Почему ты не прочитал... Я тебя так долго ждала!!!'],
-                           ['Чего?'], 1],
-            '1.1.1.1.1.1.1.': ['meeting.png', 'meeting.png', ['Почему ты прочел и проигнорировал...? я тебя так долго '
+                           ['Чего?'], 0],
+            '1.1.1.1.1.1.1.': ['meeting.png', 'meeting.png', [
+                'О! Ты пришел, я так рада!', 'Значит ты согласен встречаться!?', ' Я так рада, что это взаимно!!'],
+                               ['Стой, ты не правильно поняла, я сожалею,', 'но я не думал е о чем таком.'], 0],
+            '1.1.1.1.1.1.2.': ['meeting.png', 'meeting.png', ['Почему ты прочел и проигнорировал...? я тебя так долго '
                                                               'ждала!!'],
-                               ['Эмм.. да, на счет этого, я пока ничего подобного не планировал....'], 2],
-            '1.1.1.1.1.1.2.': ['meeting.png', 'meeting.png', [
-                'О! Ты пришел, я так рада! Значит ты согласен встречаться!? Я так рада, что это взаимно!!'],
-                               ['Стой, ты не правильно поняла, я сожалею, но я не думал е о чем таком.'], 3],
+                               ['Эмм.. да, на счет этого, я пока ничего подобного не планировал....'], 0],
             '1.1.2.1.1.1.': ['meeting2.png', 'meeting2.png',
                              [
                                  'Всмысле, ты меня обманул???? Почему мне всегда так не везет. Ненавижу!! Я тебя '
                                  'ненавижу!!'],
-                             ['Ох....'], 1],
+                             ['Ох....'], 0],
             '1.1.2.1.2.1.': ['meeting2.png', 'meeting2.png', ['Почему ты не прочитал... Я тебя так долго ждала!!!'],
-                             ['Ох....'], 1],
+                             ['Ох....'], 0],
             '1.1.1.1.1.1.1.1.': ['meeting2.png', 'meeting2.png',
-                                 ['Почему ты прочел и проигнорировал...? я тебя так долго ждала!!'],
-                                 ['Ох....'], 1],
-            '1.1.1.1.1.1.2.1.': ['meeting2.png', 'meeting2.png', [
-                'Всмысле, ты меня обманул???? Почему мне всегда так не везет. Ненавижу!! Я тебя ненавижу!!'],
-                                 ['Ох....'], 1],
+                                 ['Всмысле, ты меня обманул????', 'Почему мне всегда так '
+                                                                  'не везет. Ненавижу!! Я тебя ненавижу!!'],
+                                 ['Ох....'], 0],
+            '1.1.1.1.1.1.2.1.': ['meeting2.png', 'meeting2.png', ['Почему ты прочел и проигнорировал...? я тебя так '
+                                                                  'долго ждала!!'],
+                                 ['Ох....'], 0],
             '1.1.2.1.1.1.1.': runner,
             '1.1.2.1.2.1.1.': runner,
             '1.1.1.1.1.1.1.1.1.': runner,
             '1.1.1.1.1.1.2.1.1.': runner,
         }
-        load_image(self, 'hall.png')
+        load_image(self, 'bg.png')
 
     def draw_menu(self, screen, brightness=0, delta_x=0):
+        menu_sprites.draw(screen)
         if self.item < 2:
             self.item = 2
         elif self.item > len(self.menu) - 1:
             self.item = len(self.menu) - 1
-        screen.fill((0, 0, 0))
         font = pygame.font.Font(None, 50)
         delta_y = 0
         for i, row in enumerate(self.menu):
             if i != 0:
                 delta_x *= 0
             if self.item == i:
-                text = font.render(row, True, (180 - brightness, 0, 0))
+                text = font.render(row, True, (153 + brightness // 3, brightness, brightness))
             else:
-                text = font.render(row, True, (0, 180 - brightness, 0))
+                text = font.render(row, True, (brightness, brightness, brightness))
             text_w = text.get_width()
             text_h = text.get_height()
             text_x = self.width // 2 - text_w // 2 + delta_x
@@ -112,22 +114,25 @@ class Menu(pygame.sprite.Sprite):
         session.commit()
 
     def draw_results(self, screen, all_results):
+        load_image(self, 'bg.png')
+        menu_sprites.draw(screen)
         all_results.insert(0, ('PLAYER POINTS'))
-        screen.fill((0, 0, 0))
-        font = pygame.font.Font(None, 60)
         delta_y = 10
         for result in all_results[:10]:
             result = str(result).split()
-            print(result)
-            user = font.render(str(result[0]), True, (0, 180, 0))
-            points = font.render(str(result[1]), True, (0, 180, 0))
-            screen.blit(user, (10, delta_y))
+            font = pygame.font.Font(None, 60)
+            user = font.render(str(result[0]), True, (0, 0, 0))
+            points = font.render(str(result[1]), True, (0, 0, 0))
+            font = pygame.font.Font(None, 30)
+            dots = font.render('.' * 200, True, (0, 0, 0))
+            screen.blit(user, (0, delta_y))
             screen.blit(points, (790 - points.get_width(), delta_y))
+            screen.blit(dots, (10, delta_y + 30))
             delta_y += 60
 
     def start(self, bg, image, story, answers, vector=0):
-        x = 2
-        y = 2
+        x, y = 10, 10
+        delta = 2
         self.current_screen = 'first'
         screen.fill((0, 0, 0))
         load_image(self, bg)
@@ -135,21 +140,20 @@ class Menu(pygame.sprite.Sprite):
         if bg != image:
             load_image(self, image, x=x, y=y)
             menu_sprites.draw(screen)
-            for i in range(1):
+            for i in range(x // delta):
                 load_image(self, bg)
                 menu_sprites.draw(screen)
                 if vector == 0:
-                    y -= 2
+                    y -= delta
                     x = 0
                 elif vector == 1:
-                    y += 2
+                    y += delta
                     x = 0
                 elif vector == 2:
-                    x += 2
+                    x += delta
                     y = 0
                 elif vector == 3:
-                    x -= 2
-                    print("nya")
+                    x -= delta
                     y = 0
                 load_image(self, image, x=x, y=y)
                 menu_sprites.draw(screen)
@@ -164,6 +168,9 @@ class Menu(pygame.sprite.Sprite):
         screen.blit(s, (0, 500))
         answers = [font.render(answer, True, (200, 0, 0)) for answer in answers]
         y = 450
+        s = pygame.Surface((800, 150), pygame.SRCALPHA)
+        s.fill((0, 0, 0, 128))
+        screen.blit(s, (0, 450))
         for answer in answers:
             screen.blit(answer, (0, y))
             y += 50
@@ -173,10 +180,20 @@ class Menu(pygame.sprite.Sprite):
         self.draw_results(screen, all_results)
 
     def show_about(self):
-        screen.fill((0, 0, 0))
         font = pygame.font.Font(None, 50)
-        text = font.render('authors snd etc', True, pygame.Color('white'))
+        brightness = 255
+        for i in range(5):
+            load_image(self, 'bg.png')
+            menu_sprites.draw(screen)
+            text = font.render('authors snd etc', True, (brightness, brightness, brightness))
+            screen.blit(text, (200, 50))
+            pygame.display.flip()
+            brightness -= 51
+        load_image(self, 'bg.png')
+        menu_sprites.draw(screen)
+        text = font.render('authors snd etc', True, (brightness, brightness, brightness))
         screen.blit(text, (200, 50))
+        pygame.display.flip()
 
     def update(self, delta_x=0, delta_y=0):
         self.rect.x += delta_x
@@ -226,7 +243,7 @@ class Boy(pygame.sprite.Sprite):
 class Girl(pygame.sprite.Sprite):
     def __init__(self, group):
         super().__init__(group)
-        self.boys = ['girl.png', 'girl.png', 'girl.png', 'girl.png']
+        self.boys = ['girl1.png', 'girl2.png']
         self.x = 200
         self.y = 500
         self.width = 45
@@ -317,9 +334,9 @@ def runner():
             bg2.rect.x = 800
         i += 5
         if i % 50 == 0:
-            if choices([0, 1], [0.8, 0.2]) == [1]:
+            if choices([0, 1], [0.2, 0.8]) == [1]:
                 Coin(all_sprites, 850, choice([540, 470]))
-            elif choices([0, 1], [0.3, 0.7]) == [1]:
+            elif choices([0, 1], [0.6, 0.4]) == [1]:
                 Cow(all_sprites, 850, 530)
         all_sprites.update()
         all_sprites.draw(screen)
@@ -339,6 +356,8 @@ def runner():
     pygame.display.flip()
     boy.kill()
     point.kill()
+    global story_path
+    story_path = ''
 
 
 if __name__ == '__main__':
@@ -384,9 +403,11 @@ if __name__ == '__main__':
                             game.draw_menu(screen)
                             break
                 if event.key == pygame.K_DOWN:
+                    load_image(game, 'bg.png')
                     game.item += 1
                     game.draw_menu(screen)
                 if event.key == pygame.K_UP:
+                    load_image(game, 'bg.png')
                     game.item += -1
                     game.draw_menu(screen)
                 if event.key == pygame.K_RETURN:
@@ -397,7 +418,7 @@ if __name__ == '__main__':
                                 game.draw_menu(screen, delta_x=x[i])
                                 sleep(0.04)
                         else:
-                            for i in range(10, 181, 10):
+                            for i in range(0, 256, 51):
                                 game.draw_menu(screen, i)
                                 sleep(0.04)
                             bg, image, story, answers = game.screenplay['0']
@@ -405,13 +426,15 @@ if __name__ == '__main__':
                     elif game.menu[game.item] == 'Records':
                         game.show_results()
                     elif game.menu[game.item] == 'About':
-                        for i in range(10, 181, 10):
+                        for i in range(0, 256, 51):
                             game.draw_menu(screen, i)
                             sleep(0.04)
                         game.show_about()
 
                 if event.key == pygame.K_ESCAPE:
-                    for i in range(170, -1, -10):
+                    load_image(game, 'bg.png')
+                    menu_sprites.draw(screen)
+                    for i in range(255, -1, -51):
                         game.draw_menu(screen, i)
                         sleep(0.1)
                 if event.key == pygame.K_BACKSPACE:
