@@ -1,4 +1,3 @@
-from json import load
 from create_db import create, Result, session
 from random import choice, choices
 from string import ascii_lowercase
@@ -51,25 +50,27 @@ class Menu(pygame.sprite.Sprite):
                              ['Пойти на крышу', 'Проигнорировать и пойти домой'], 0],
             '1.1.2.1.': ['clock.png', 'clock.png', ['*звонок*'], ['Пойти на крышу, подышать', 'Пойти домой'], 0],
             '1.1.2.1.1.': ['meeting.png', 'meeting.png',
-                           ['О! Ты пришел, я так рада! Значит ты согласен встречаться!? Я так рада, что это взаимно!!'],
+                           ['О! Ты пришел, я так рада!', 'Значит ты согласен встречаться!?', 'Я так рада, что это '
+                                                                                             'взаимно!!'],
                            ['Эмм.. что..я не... это не..'], 0],
-            '1.1.2.1.2.': ['meeting.png', 'meeting.png', ['Почему ты не прочитал... Я тебя так долго ждала!!!'],
+            '1.1.2.1.2.': ['meeting.png', 'meeting.png', ['Почему ты не прочитал...', 'Я тебя так долго ждала!!!'],
                            ['Чего?'], 0],
             '1.1.1.1.1.1.1.': ['meeting.png', 'meeting.png', [
                 'О! Ты пришел, я так рада!', 'Значит ты согласен встречаться!?', ' Я так рада, что это взаимно!!'],
                                ['Стой, ты не правильно поняла, я сожалею,', 'но я не думал е о чем таком.'], 0],
-            '1.1.1.1.1.1.2.': ['meeting.png', 'meeting.png', ['Почему ты прочел и проигнорировал...? я тебя так долго '
-                                                              'ждала!!'],
-                               ['Эмм.. да, на счет этого, я пока ничего подобного не планировал....'], 0],
+            '1.1.1.1.1.1.2.': ['meeting.png', 'meeting.png',  ['Почему ты прочел и проигнорировал...?', 'я тебя так '
+                                                                                                        'долго '
+                                                                                                        'ждала!!'],
+                               ['Эмм.. да, на счет этого,', 'я пока ничего подобного не планировал....'], 0],
             '1.1.2.1.1.1.': ['meeting2.png', 'meeting2.png',
                              [
-                                 'Всмысле, ты меня обманул???? Почему мне всегда так не везет. Ненавижу!! Я тебя '
-                                 'ненавижу!!'],
+                                 'Всмысле, ты меня обманул????', 'Почему мне всегда так не везет.',
+                                 ' Ненавижу!! Я тебя ненавижу!!'],
                              ['Ох....'], 0],
-            '1.1.2.1.2.1.': ['meeting2.png', 'meeting2.png', ['Почему ты не прочитал... Я тебя так долго ждала!!!'],
+            '1.1.2.1.2.1.': ['meeting2.png', 'meeting2.png', ['Почему ты не прочитал...', 'Я тебя так долго ждала!!!'],
                              ['Ох....'], 0],
-            '1.1.1.1.1.1.1.1.': ['meeting2.png', 'meeting2.png',
-                                 ['Всмысле, ты меня обманул????', 'Почему мне всегда так '
+            '1.1.1.1.1.1.1.1.': ['meeting2.png', 'meeting2.png', ['Всмысле, ты меня обманул????',
+                                                                  'Почему мне всегда так ',
                                                                   'не везет. Ненавижу!! Я тебя ненавижу!!'],
                                  ['Ох....'], 0],
             '1.1.1.1.1.1.2.1.': ['meeting2.png', 'meeting2.png', ['Почему ты прочел и проигнорировал...? я тебя так '
@@ -185,13 +186,13 @@ class Menu(pygame.sprite.Sprite):
         for i in range(5):
             load_image(self, 'bg.png')
             menu_sprites.draw(screen)
-            text = font.render('authors snd etc', True, (brightness, brightness, brightness))
+            text = font.render('Especially for lyceum', True, (brightness, brightness, brightness))
             screen.blit(text, (200, 50))
             pygame.display.flip()
             brightness -= 51
         load_image(self, 'bg.png')
         menu_sprites.draw(screen)
-        text = font.render('authors snd etc', True, (brightness, brightness, brightness))
+        text = font.render('Especially for lyceum', True, (brightness, brightness, brightness))
         screen.blit(text, (200, 50))
         pygame.display.flip()
 
@@ -243,7 +244,7 @@ class Boy(pygame.sprite.Sprite):
 class Girl(pygame.sprite.Sprite):
     def __init__(self, group):
         super().__init__(group)
-        self.boys = ['girl1.png', 'girl2.png']
+        self.boys = ['girl.png', 'girl2.png']
         self.x = 200
         self.y = 500
         self.width = 45
@@ -301,7 +302,7 @@ class Point(pygame.sprite.Sprite):
         load_image(self, 'point.png', x, y, 20, 20)
 
     def update(self):
-        if self.rect.x != 761:
+        if self.rect.x != 760:
             self.rect.x += 1
         else:
             global game_over
@@ -336,7 +337,7 @@ def runner():
         if i % 50 == 0:
             if choices([0, 1], [0.2, 0.8]) == [1]:
                 Coin(all_sprites, 850, choice([540, 470]))
-            elif choices([0, 1], [0.6, 0.4]) == [1]:
+            elif choices([0, 1], [0.2, 0.8]) == [1]:
                 Cow(all_sprites, 850, 530)
         all_sprites.update()
         all_sprites.draw(screen)
@@ -441,6 +442,6 @@ if __name__ == '__main__':
                     if len(game.menu[1]) > 1:
                         game.menu[1] = game.menu[1][:-2] + '|'
                         game.draw_menu(screen)
-        clock.tick(120)
+        clock.tick(200)
         pygame.display.flip()
     pygame.quit()
